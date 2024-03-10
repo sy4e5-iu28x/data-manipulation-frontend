@@ -1,0 +1,21 @@
+body {
+    margin: 0 auto;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-flow: column;
+    row-gap: 20px;
+    width: 300px;
+    padding: 30px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+:has(.container) {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
