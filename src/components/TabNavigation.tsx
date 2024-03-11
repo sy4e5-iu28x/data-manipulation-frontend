@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Navigate, Outlet } from 'react-router-dom'
 import { Box, Tabs, Tab, AppBar } from '@mui/material'
 import SignIn from './SignIn';
 import DataClassPage from './DataClassPage';
 import DataObjectPage from './DataObjectPage';
+import { isLoggedIn } from './AuthUtils'
 
 /**
  * Tabタグに必要な属性を適用する。
@@ -46,12 +47,9 @@ export default function TabNavigation() {
     }
   }, [location.pathname]);
 
-  // ログイン状態
-  const [isLoggedIn, setisLoggedIn] = useState(false);
-
   // ログイン要否判定
   const AuthRequiredRoutes = () => {
-    if (isLoggedIn) {
+    if (isLoggedIn()) {
       // ログイン済み
       return <Outlet />
 
@@ -67,7 +65,7 @@ export default function TabNavigation() {
   return (
     <div className="tab">
       <AppBar position="static" color="transparent" style={{ position: "fixed", top: 0 }} />
-      <Box sx={{ width: '100%' }} hidden={!isLoggedIn}>
+      <Box sx={{ width: '100%' }} hidden={!isLoggedIn()}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={selectedTabIndex} onChange={handleChange} aria-label="basic tab example">
             <Tab label="クラス" {...applyProperties(0)} component={Link} to={"/classpage"} />
@@ -81,7 +79,7 @@ export default function TabNavigation() {
           <Route path="/classpage" element={<DataClassPage />} />
           <Route path="/objectpage" element={<DataObjectPage />} />
         </Route>
-        <Route path="/signin" element={isLoggedIn ? <Navigate to="/" /> : <SignIn />} />
+        <Route path="/signin" element={isLoggedIn() ? <Navigate to="/" /> : <SignIn />} />
       </Routes>
     </div>
   );
