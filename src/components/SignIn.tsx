@@ -3,21 +3,8 @@ import { Button, TextField } from '@mui/material';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { saveToken } from './AuthUtils';
-
-/**
- * サインアップユーザー
- */
-interface SignUpUser {
-  /**
-   * ユーザー名
-   */
-  username: string;
-
-  /**
-   * パスワード
-   */
-  password: string;
-}
+import { SignUpUser } from '../domains/DomainTypes'
+import { requestCreatingUser, requestIssuingToken } from './RestApiUtils'
 
 /**
  * ログイン画面を生成する。
@@ -50,24 +37,8 @@ function SignIn() {
       password: inputPassword
     }
 
-    // API URL
-    const url = "http://localhost:8080/data-manipulation/auth/signup";
-
-    // ヘッダー
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json')
-
-    // リクエストパラメタ
-    const requestParams = {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(signUpUser)
-    }
-
     // リクエスト実行
-    fetch(url, requestParams)
-      .then(response => response.json())
-      .then(json => json as SignUpUser)
+    requestCreatingUser(signUpUser)
       .catch(error => alert(error));
   }
 
@@ -78,25 +49,8 @@ function SignIn() {
       password: inputPassword
     }
 
-    // ヘッダー
-    let headers = new Headers();
-    // Basic認証設定
-    headers.append('Authorization', `basic ${btoa(`${inputUserName}:${inputPassword}`)}`)
-    headers.append('Content-Type', 'application/json')
-
-    // API URL
-    const url = "http://localhost:8080/data-manipulation/auth/token";
-
-    // リクエストパラメタ
-    const requestParams = {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(signUpUser)
-    }
-
     // リクエスト実行
-    fetch(url, requestParams)
-      .then(response => response.text())
+    requestIssuingToken(signUpUser)
       .then(text => saveToken(text))
       .then(text => navigate('/classpage'))
       .catch(error => alert(error));

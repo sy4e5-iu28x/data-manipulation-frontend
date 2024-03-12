@@ -1,0 +1,18 @@
+.contents {
+    margin: 15px;
+}
+
+.buttons {
+    margin-bottom: 15px;
+}
+
+.classes {
+    float: left;
+    width: 40%;
+    margin-right: 30px;
+}
+
+.properties {
+    float: left;
+    width: calc(60% - 30px);
+}
