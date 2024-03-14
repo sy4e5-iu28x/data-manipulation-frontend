@@ -33,6 +33,96 @@ function requestAllClasses(): Promise<DataClass[]> {
 };
 
 /**
+ * REST APIへリクエストを行い、クラスを作成する。
+ * @returns Promise<DataClass>
+ */
+function requestAddClass(dataclass: DataClass): Promise<DataClass> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = "http://localhost:8080/data-manipulation/dataclasses";
+
+  // 必要なリクエストボディ項目
+  type RequestBody = {
+    name: string;
+    type: string;
+  }
+
+  // 実際のリクエストボディ
+  const actualRequestbody: RequestBody = {
+    name: dataclass.name,
+    type: 'UserDefinedClass'
+  }
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'PUT',
+    headers: headers,
+    body: JSON.stringify(actualRequestbody)
+  }
+
+  const fetchProcess = async (): Promise<DataClass> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: DataClass = json as DataClass
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
+ * REST APIへリクエストを行い、クラスを更新する。
+ * @returns Promise<DataClass>
+ */
+function requestUpdateClass(dataclass: DataClass): Promise<DataClass> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = "http://localhost:8080/data-manipulation/dataclasses";
+
+  // 必要なリクエストボディ項目
+  type RequestBody = {
+    id: number;
+    name: string;
+    type: string;
+  }
+
+  // 実際のリクエストボディ
+  const actualRequestbody: RequestBody = {
+    id: dataclass.id,
+    name: dataclass.name,
+    type: dataclass.type
+  }
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'PUT',
+    headers: headers,
+    body: JSON.stringify(actualRequestbody)
+  }
+
+  const fetchProcess = async (): Promise<DataClass> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: DataClass = json as DataClass
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
  * REST APIへリクエストし、ユーザーを作成する。
  * @param user 登録ユーザー
  * @returns Promise<SignUpUser>
@@ -99,4 +189,4 @@ function requestIssuingToken(user: SignUpUser): Promise<string> {
   return fetchProcess()
 }
 
-export { requestAllClasses, requestCreatingUser, requestIssuingToken }
+export { requestAllClasses, requestAddClass, requestUpdateClass, requestCreatingUser, requestIssuingToken }

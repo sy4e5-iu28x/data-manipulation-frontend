@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { Button, List, ListItemButton, ListItemText, Paper, Stack } from '@mui/material'
 import { DataClass, DataProperty } from '../domains/DomainTypes'
 import { requestAllClasses } from './RestApiUtils'
+import DataClassEditDialog from './DataClassEditDialog'
 
 /**
  * データクラスページを生成する。
@@ -16,6 +17,10 @@ function DataClassPage() {
   const [dataProperties, setDataProperties] = useState<DataProperty[]>([]);
   // データクラス選択インデックス
   const [selectedClassIndex, setSelectedClassIndex] = useState(0);
+  // データクラス編集ダイアログ表示状態
+  const [openClassEditDialog, setOpenClassEditDialog] = useState(false);
+  // データクラス編集ダイアログで開いている要素
+  const [selectedDataClassItem, setSelectedDataClassItem] = useState<DataClass | undefined>(undefined);
 
   // 初回データ読み込み
   useEffect(() => {
@@ -47,14 +52,43 @@ function DataClassPage() {
     requestAllClasses().then(result => setDataClasses(result));
   }, []);
 
+  // データクラス編集ダイアログ表示ハンドラ
+  const handleOpenClassEditDialog = () => {
+    setOpenClassEditDialog(true)
+  }
+
+  // データクラス編集ダイアログ非表示ハンドラ
+  const handleCloseDialog = () => {
+    setOpenClassEditDialog(false)
+  }
+
+  // データクラス追加ボタン押下ハンドラ
+  const handleAddClassButton = () => {
+    setSelectedDataClassItem(undefined)
+    setOpenClassEditDialog(true)
+  }
+
   /**
    * データクラス一覧 選択ハンドラ
    * @param event マウスイベント
    * @param index 選択要素インデックス
    */
   const handleClassItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+    setSelectedDataClassItem(dataclasses.at(index))
     setSelectedClassIndex(index);
   }
+
+  /**
+   * データクラス一覧 ダブルクリックハンドラ
+   * @param event マウスイベント
+   * @param index ダブルクリック要素インデックス
+   */
+  const handleClassItemDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+    setSelectedClassIndex(index);
+    setSelectedDataClassItem(dataclasses.at(index))
+    handleOpenClassEditDialog();
+  }
+
   // タブやボタンエリアなどのヘッダー高さ
   const headerHeight: number = 142;
 
@@ -64,7 +98,7 @@ function DataClassPage() {
       <div className='buttons'>
         <Paper style={{ padding: '5px' }}>
           <Stack direction="row" spacing={2}>
-            <Button variant='text' startIcon={<AddIcon />}>クラスの追加</Button>
+            <Button variant='text' onClick={handleAddClassButton} startIcon={<AddIcon />}>クラスの追加</Button>
             <Button variant='text' startIcon={<AddIcon />} >プロパティの追加</Button>
           </Stack>
         </Paper>
@@ -76,13 +110,15 @@ function DataClassPage() {
               {dataclasses.map((item, index) => (
                 <ListItemButton
                   key={index} selected={selectedClassIndex === index}
-                  onClick={(event) => handleClassItemClick(event, index)}>
+                  onClick={(event) => handleClassItemClick(event, index)}
+                  onDoubleClick={(event) => handleClassItemDoubleClick(event, index)}>
                   <ListItemText primary={item.name} />
                 </ListItemButton>
               ))}
             </List>
           </nav>
         </Paper>
+        <DataClassEditDialog open={openClassEditDialog} onClose={handleCloseDialog} dataclassItem={selectedDataClassItem} />
       </div>
       <div className='properties'>
         <Paper style={{ height: `calc(100vh - ${headerHeight}px)`, overflow: 'auto' }}>
