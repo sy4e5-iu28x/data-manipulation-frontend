@@ -21,18 +21,6 @@ function DataObjectPage() {
   // 初回データ読み込み
   useEffect(() => {
     // ダミークラスデータ作成
-    let rawClasses: Array<DataClass> = []
-    for (let i: number = 0; i < 10; i++) {
-      let dummyClass: DataClass = {
-        id: i,
-        name: `ダミークラス${i}`,
-        type: 'UserDefinedClass'
-      }
-      rawClasses.push(dummyClass);
-      setDataClasses(rawClasses);
-    };
-
-    // ダミークラスデータ作成
     let dummyObjects: Array<DataClass> = []
     for (let i: number = 0; i < 10; i++) {
       let dummyObject: DataClass = {
@@ -41,7 +29,7 @@ function DataObjectPage() {
         type: 'UserDefinedClass'
       }
       dummyObjects.push(dummyObject);
-      setDataObjects(rawClasses);
+      setDataObjects(dummyObjects);
     };
 
     // 全データクラス取得 (REST API)

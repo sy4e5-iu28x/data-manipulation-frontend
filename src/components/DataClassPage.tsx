@@ -36,18 +36,6 @@ function DataClassPage() {
       setDataProperties(rawProperties);
     };
 
-    // ダミークラスデータ
-    let rawClasses: Array<DataClass> = []
-    for (let i: number = 0; i < 10; i++) {
-      let dummyClass: DataClass = {
-        id: i,
-        name: `ダミークラス${i}`,
-        type: 'UserDefinedClass'
-      }
-      rawClasses.push(dummyClass);
-      setDataClasses(rawClasses);
-    };
-
     // 全データクラス取得 (REST API)
     requestAllClasses().then(result => setDataClasses(result));
   }, []);

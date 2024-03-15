@@ -60,7 +60,7 @@ function requestAddClass(dataclass: DataClass): Promise<DataClass> {
 
   // リクエストパラメタ
   const requestParams = {
-    method: 'PUT',
+    method: 'POST',
     headers: headers,
     body: JSON.stringify(actualRequestbody)
   }
@@ -88,25 +88,23 @@ function requestUpdateClass(dataclass: DataClass): Promise<DataClass> {
   headers.append('Content-Type', 'application/json')
 
   // API URL
-  const url = "http://localhost:8080/data-manipulation/dataclasses";
+  const url = `http://localhost:8080/data-manipulation/dataclasses/${dataclass.id}`;
 
   // 必要なリクエストボディ項目
   type RequestBody = {
-    id: number;
     name: string;
     type: string;
   }
 
   // 実際のリクエストボディ
   const actualRequestbody: RequestBody = {
-    id: dataclass.id,
     name: dataclass.name,
     type: dataclass.type
   }
 
   // リクエストパラメタ
   const requestParams = {
-    method: 'PUT',
+    method: 'POST',
     headers: headers,
     body: JSON.stringify(actualRequestbody)
   }
