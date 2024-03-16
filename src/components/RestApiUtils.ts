@@ -1,4 +1,4 @@
-import { DataClass, SignUpUser } from '../domains/DomainTypes'
+import { DataClass, DataProperty, SignUpUser } from '../domains/DomainTypes'
 import { getToken } from './AuthUtils'
 
 /**
@@ -26,6 +26,37 @@ function requestAllClasses(): Promise<DataClass[]> {
     const response = await fetch(url, requestParams)
     const json = await response.json()
     const results: Array<DataClass> = json as Array<DataClass>
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
+ * REST APIへリクエストを行い、全データプロパティを取得する。
+ * @returns Promise<DataClass[]>
+ */
+function requestAllProperties(): Promise<DataProperty[]> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = "http://localhost:8080/data-manipulation/dataproperties";
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'GET',
+    headers: headers
+  }
+
+  const fetchProcess = async (): Promise<DataProperty[]> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: Array<DataProperty> = json as Array<DataProperty>
     return results;
   }
 
@@ -77,6 +108,50 @@ function requestAddClass(dataclass: DataClass): Promise<DataClass> {
 };
 
 /**
+ * REST APIへリクエストを行い、プロパティを作成する。
+ * @returns Promise<DataProperty>
+ */
+function requestAddProperty(dataproperty: DataProperty): Promise<DataProperty> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = "http://localhost:8080/data-manipulation/dataproperties";
+
+  // 必要なリクエストボディ項目
+  type RequestBody = {
+    name: string;
+    typeClassId: number;
+  }
+
+  // 実際のリクエストボディ
+  const actualRequestbody: RequestBody = {
+    name: dataproperty.name,
+    typeClassId: dataproperty.typeClassId
+  }
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(actualRequestbody)
+  }
+
+  const fetchProcess = async (): Promise<DataProperty> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: DataProperty = json as DataProperty
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
  * REST APIへリクエストを行い、クラスを更新する。
  * @returns Promise<DataClass>
  */
@@ -114,6 +189,50 @@ function requestUpdateClass(dataclass: DataClass): Promise<DataClass> {
     const response = await fetch(url, requestParams)
     const json = await response.json()
     const results: DataClass = json as DataClass
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
+ * REST APIへリクエストを行い、プロパティを更新する。
+ * @returns Promise<DataClass>
+ */
+function requestUpdateProperty(dataproperty: DataProperty): Promise<DataProperty> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = `http://localhost:8080/data-manipulation/dataproperties/${dataproperty.id}`;
+
+  // 必要なリクエストボディ項目
+  type RequestBody = {
+    name: string;
+    typeClassId: number;
+  }
+
+  // 実際のリクエストボディ
+  const actualRequestbody: RequestBody = {
+    name: dataproperty.name,
+    typeClassId: dataproperty.typeClassId
+  }
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(actualRequestbody)
+  }
+
+  const fetchProcess = async (): Promise<DataProperty> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: DataProperty = json as DataProperty
     return results;
   }
 
@@ -187,4 +306,4 @@ function requestIssuingToken(user: SignUpUser): Promise<string> {
   return fetchProcess()
 }
 
-export { requestAllClasses, requestAddClass, requestUpdateClass, requestCreatingUser, requestIssuingToken }
+export { requestAllClasses, requestAllProperties, requestAddClass, requestAddProperty, requestUpdateClass, requestUpdateProperty, requestCreatingUser, requestIssuingToken }

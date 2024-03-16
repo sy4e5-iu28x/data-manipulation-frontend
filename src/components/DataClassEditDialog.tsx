@@ -69,7 +69,7 @@ function DataClassEditDialog({ open, onClose, dataclassItem }: { open: boolean; 
         <DialogTitle>クラスの編集</DialogTitle>
         <DialogContent style={{ padding: '20px' }}>
           <Stack direction="column" spacing={2}>
-            <TextField label='クラス名' variant='outlined' onChange={(event) => setClassNameField(event.target.value)} value={classNameField} />
+            <TextField label='クラス名' variant='outlined' multiline style={{ resize: 'both' }} onChange={(event) => setClassNameField(event.target.value)} value={classNameField} />
             <Button variant='contained' onClick={handleOnClickSaveButton} startIcon={<AddIcon />} >保存</Button>
           </Stack>
         </DialogContent>

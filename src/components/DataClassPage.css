@@ -8,11 +8,17 @@
 
 .classes {
     float: left;
-    width: 40%;
-    margin-right: 30px;
+    width: 30%;
+    margin-right: 10px;
+}
+
+.ownedProperties {
+    float: left;
+    width: calc(40% - 30px);
+    margin-right: 50px;
 }
 
 .properties {
     float: left;
-    width: calc(60% - 30px);
+    width: calc(30% - 30px);
 }
