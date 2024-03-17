@@ -1,5 +1,5 @@
 import './SignIn.css'
-import { Button, TextField } from '@mui/material';
+import { Alert, Button, Snackbar, TextField } from '@mui/material';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { saveToken } from './AuthUtils';
@@ -18,6 +18,12 @@ function SignIn() {
   const [inputUserName, setInputUserName] = useState('');
   // パスワード入力欄
   const [inputPassword, setInputPassword] = useState('');
+  // スナックバー表示状態
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  // スナックバーメッセージ
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  // スナックバーアラート重大度
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('')
 
   // ユーザー名入力欄ハンドラ
   const handleUserNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +35,11 @@ function SignIn() {
     setInputPassword(event.target.value)
   }
 
+  // アラート重大度 エラー
+  const ALERT_SERVERITY_ERROR = 'error'
+  // アラート重大度 成功
+  const ALERT_SERVERITY_SUCCESS = 'success'
+
   // サインアップ処理
   const onClickSignUp = () => {
     // ユーザー情報
@@ -39,7 +50,16 @@ function SignIn() {
 
     // リクエスト実行
     requestCreatingUser(signUpUser)
-      .catch(error => alert(error));
+      .then(value => {
+        setSnackbarAlertSeverity(ALERT_SERVERITY_SUCCESS);
+        setSnackbarMessage('アカウントを作成しました。')
+        setOpenSnackbar(true)
+      })
+      .catch(error => {
+        setSnackbarAlertSeverity(ALERT_SERVERITY_ERROR);
+        setSnackbarMessage('アカウント作成に失敗しました。\r\n別のユーザー名で作成してください。')
+        setOpenSnackbar(true)
+      });
   }
 
   // ログイン処理
@@ -51,19 +71,46 @@ function SignIn() {
 
     // リクエスト実行
     requestIssuingToken(signUpUser)
-      .then(text => saveToken(text))
-      .then(text => navigate('/classpage'))
-      .catch(error => alert(error));
+      .then(text => {
+        // 取得結果保存し、遷移する
+        saveToken(text);
+        navigate('/classpage')
+      })
+      .catch(error => {
+        // トークン取得できていない場合
+        setSnackbarAlertSeverity(ALERT_SERVERITY_ERROR);
+        setSnackbarMessage('ログインに失敗しました。\r\nユーザー名とパスワードをご確認ください。')
+        setOpenSnackbar(true)
+        // ユーザー名、パスワード欄をクリア
+        setInputUserName('')
+        setInputPassword('')
+      });
+  }
+
+  // スナックバーに表示するアラートの生成
+  const renderSnackbarAlert = () => {
+    if (snackbarAlertSeverity === ALERT_SERVERITY_ERROR) {
+      // エラー時
+      return <Alert severity='error' sx={{ textAlign: 'left', whiteSpace: 'pre-line' }}>{snackbarMessage}</Alert>
+
+    } else if (snackbarAlertSeverity === ALERT_SERVERITY_SUCCESS) {
+      // 成功時
+      return <Alert severity='success' sx={{ textAlign: 'left', whiteSpace: 'pre-line' }}>{snackbarMessage}</Alert>
+    }
   }
 
   // HTML生成
   return (
     <div>
       <div className='container' >
-        <TextField label='ユーザー名' variant='standard' type='text' onChange={handleUserNameInputChange} />
-        <TextField label='パスワード' variant='standard' type='password' onChange={handlePasswordInputChange} />
+        <TextField label='ユーザー名' variant='standard' type='text' onChange={handleUserNameInputChange} value={inputUserName} />
+        <TextField label='パスワード' variant='standard' type='password' onChange={handlePasswordInputChange} value={inputPassword} />
         <Button variant='contained' onClick={onClickLogin} >ログイン</Button>
         <Button variant='text' onClick={onClickSignUp}>アカウントを作成する</Button>
+        <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={openSnackbar}
+          onClose={(event) => setOpenSnackbar(false)} message={snackbarMessage}>
+          {renderSnackbarAlert()}
+        </Snackbar>
       </div>
     </div>
   );

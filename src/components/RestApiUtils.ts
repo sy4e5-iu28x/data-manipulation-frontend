@@ -301,6 +301,16 @@ function requestIssuingToken(user: SignUpUser): Promise<string> {
     // リクエスト実行
     return await fetch(url, requestParams)
       .then(response => response.text())
+      .then(text => {
+        if (!text) {
+          // 取得結果が空の場合
+          throw new Error('トークンの取得に失敗しました')
+
+        } else {
+          // 取得できた場合
+          return text;
+        }
+      })
   }
 
   return fetchProcess()

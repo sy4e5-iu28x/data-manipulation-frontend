@@ -4,7 +4,7 @@ import TabNavigation from './components/TabNavigation';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" onContextMenu={(event) => event.preventDefault()}>
       <TabNavigation />
     </div>
   );
