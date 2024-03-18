@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import './DataClassPage.css'
+import './DataObjectPage.css'
 import AddIcon from '@mui/icons-material/Add'
-import { Button, List, ListItemButton, ListItemText, Paper, Stack } from '@mui/material'
+import { Button, Card, CardActionArea, CardContent, Grid, List, ListItemButton, ListItemText, Paper, Stack, Typography } from '@mui/material'
 import { DataClass } from '../domains/DomainTypes'
 import { requestAllClasses } from './RestApiUtils'
 
@@ -71,18 +71,24 @@ function DataObjectPage() {
           </nav>
         </Paper>
       </div>
-      <div className='objects'>
-        <Paper style={{ height: `calc(100vh - ${headerHeight}px)`, overflow: 'auto' }}>
-          <nav aria-label='dataproperties list'>
-            <List>
-              {dataObjects.map((item, index) => (
-                <ListItemButton key={index}>
-                  <ListItemText primary={item.name} />
-                </ListItemButton>
-              ))}
-            </List>
-          </nav>
-        </Paper>
+      <div className='objects' style={{ height: `calc(100vh - ${headerHeight}px)`, overflow: 'auto' }}>
+        <Grid container spacing={3} padding={2}>
+          {dataObjects.map((item, index) => (
+            <Grid item xs={6} sm={6} md={3} key={index}>
+              <Card >
+                <CardActionArea>
+                  <CardContent>
+                    <Stack direction='column' spacing={0}>
+                      <Typography sx={{ whiteSpace: 'pre-line' }}>{item.id}</Typography>
+                      <Typography sx={{ whiteSpace: 'pre-line' }}>{item.name}</Typography>
+                      <Typography sx={{ whiteSpace: 'pre-line' }}>{item.type}</Typography>
+                    </Stack>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </div>
     </div >
   );

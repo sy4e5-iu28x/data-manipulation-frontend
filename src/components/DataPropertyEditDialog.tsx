@@ -63,7 +63,7 @@ function DataPropertyEditDialog({ open, onClose, datapropertyItem, dataclasses }
       // リクエスト
       requestAddProperty(newDataClass)
         .then(item => {
-          navigate('/classpage');
+          onClose();
         })
 
     } else {
@@ -78,7 +78,7 @@ function DataPropertyEditDialog({ open, onClose, datapropertyItem, dataclasses }
       // リクエスト
       requestUpdateProperty(updateClass)
         .then(item => {
-          navigate('/classpage');
+          onClose();
         })
     };
   }

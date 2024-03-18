@@ -3,7 +3,6 @@ import AddIcon from '@mui/icons-material/Add'
 import { Button, Dialog, DialogContent, DialogTitle, Stack, TextField } from '@mui/material'
 import { DataClass } from '../domains/DomainTypes'
 import { requestAddClass, requestUpdateClass } from './RestApiUtils';
-import { useNavigate } from 'react-router-dom';
 
 /**
  * データクラス編集ダイアログを生成する。
@@ -12,15 +11,13 @@ import { useNavigate } from 'react-router-dom';
  * @param dataclassItem ダイアログ対象データクラス
  * @returns  データクラスダイアログ
  */
-function DataClassEditDialog({ open, onClose, dataclassItem }: { open: boolean; onClose: () => void; dataclassItem: DataClass | undefined }) {
+function DataClassEditDialog({ open, onClose, dataclassItem }:
+  { open: boolean; onClose: () => void; dataclassItem: DataClass | undefined }) {
   // 対象のデータクラス
   const [targetDataClassItem, setTargetDataClassItem] = useState<DataClass | undefined>()
 
   // クラス名フィールド
   const [classNameField, setClassNameField] = useState<string | undefined>();
-
-  // 遷移用
-  const navigate = useNavigate()
 
   // 初回読み込み時
   useEffect(() => {
@@ -43,7 +40,8 @@ function DataClassEditDialog({ open, onClose, dataclassItem }: { open: boolean; 
       // リクエスト
       requestAddClass(newDataClass)
         .then(item => {
-          navigate('/classpage');
+          // ダイアログを閉じる
+          onClose();
         })
 
     } else {
@@ -58,7 +56,8 @@ function DataClassEditDialog({ open, onClose, dataclassItem }: { open: boolean; 
       // リクエスト
       requestUpdateClass(updateClass)
         .then(item => {
-          navigate('/classpage');
+          // ダイアログを閉じる
+          onClose();
         })
     };
   }

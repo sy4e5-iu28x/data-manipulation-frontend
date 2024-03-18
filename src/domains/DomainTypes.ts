@@ -40,6 +40,27 @@ export interface DataProperty {
 }
 
 /**
+ * データクラス・データプロパティ関係
+ */
+export interface DataClassDataPropertyRelation {
+
+  /**
+   * データクラス・データプロパティ関係ID
+   */
+  id: number,
+
+  /**
+   * データクラスID
+   */
+  dataclassId: number,
+
+  /**
+   * データプロパティID
+   */
+  datapropertyId: number
+}
+
+/**
  * ユーザー
  */
 export interface SignUpUser {
