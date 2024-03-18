@@ -73,8 +73,8 @@ function DataClassPage() {
     // 全データクラス取得 (REST API)
     requestAllClasses().then(result => {
       setDataClasses(result);
-      // 要素が1以上の場合戦闘要素を選択状態にする。
-      if (result.length > 0) {
+      // 要素が1以上かつ、選択済み要素がない場合は、先頭要素を選択状態にする。
+      if (result.length > 0 && selectedDataClassItem === undefined) {
         setSelectedClassIndex(0);
         setSelectedDataClassItem(result.at(0));
       }
