@@ -92,8 +92,9 @@ function DataPropertyEditDialog({ open, onClose, datapropertyItem, dataclasses }
             <TextField label='プロパティ名' variant='outlined' multiline style={{ resize: 'both' }}
               onChange={(event) => setPropertyNameField(event.target.value)} value={propertyNameField} />
             <Autocomplete options={dataClasses} style={{ width: 300 }}
+              inputValue={inputTypeClassField ?? ''}
               value={selectedTypeClassItem ?? dataclasses.find(item => item.id === datapropertyItem?.typeClassId)}
-              onChange={(event: any, newValue: DataClass | null) => { setSelectedTypeClassItem(newValue) }}
+              onChange={(event: any, newValue: DataClass | null) => { if (newValue !== null) { setSelectedTypeClassItem(newValue) } }}
               onInputChange={(event, newInputValue) => { setInputTypeClassField(newInputValue) }}
               autoHighlight
               getOptionLabel={(option) => option.name}
