@@ -40,6 +40,25 @@ export interface DataProperty {
 }
 
 /**
+ * データオブジェクト情報
+ */
+export interface DataObjectInformation {
+  dataobjectId: number,
+  dataclassId: number,
+  dataproperties: DataProperty[],
+  datavalues: DataValue[]
+}
+
+/**
+ * データ値
+ */
+export interface DataValue {
+  id: number,
+  dataContent: string,
+  savedDateTime: Date
+}
+
+/**
  * データクラス・データプロパティ関係
  */
 export interface DataClassDataPropertyRelation {

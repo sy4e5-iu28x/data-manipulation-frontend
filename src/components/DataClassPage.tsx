@@ -3,9 +3,10 @@ import './DataClassPage.css'
 import AddIcon from '@mui/icons-material/Add'
 import { Button, List, ListItemButton, ListItemText, Menu, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material'
 import { DataClass, DataClassDataPropertyRelation, DataProperty } from '../domains/DomainTypes'
-import { requestAddClassPropertyRelation, requestAllClasses, requestAllProperties, requestPropertyClassRelationsByDataClassId as requestClassPropertyRelationsByDataClassId, requestPropertyClassRelationsByDataClassId } from './RestApiUtils'
+import { requestAddClassPropertyRelation, requestAllClasses, requestAllProperties, requestClassPropertyRelationsByDataClassId } from './RestApiUtils'
 import DataClassEditDialog from './DataClassEditDialog'
 import DataPropertyEditDialog from './DataPropertyEditDialog'
+import { TYPE_USER_DEFINED_CLASS } from '../domains/Consts'
 
 /**
  * データクラスページを生成する。
@@ -231,10 +232,10 @@ function DataClassPage() {
       </div>
       <div className='classes'>
         <Paper style={{ height: `calc(100vh - ${headerHeight}px)`, overflow: 'auto' }}>
-          {dataclasses.length === 0 ? <Typography sx={{ color: 'grey', padding: '30px' }}>クラスを追加してください</Typography> : <></>}
+          {dataclasses.filter(item => item.type === TYPE_USER_DEFINED_CLASS).length === 0 ? <Typography sx={{ color: 'grey', padding: '30px' }}>クラスを追加してください</Typography> : <></>}
           <nav aria-label='dataclasses list'>
             <List>
-              {dataclasses.map((item, index) => (
+              {dataclasses.filter(item => item.type === TYPE_USER_DEFINED_CLASS).map((item, index) => (
                 <ListItemButton
                   key={index} selected={selectedClassIndex === index}
                   onClick={(event) => handleClassItemClick(event, index)}

@@ -1,4 +1,4 @@
-import { DataClass, DataClassDataPropertyRelation, DataProperty, SignUpUser } from '../domains/DomainTypes'
+import { DataClass, DataClassDataPropertyRelation, DataObjectInformation, DataProperty, SignUpUser } from '../domains/DomainTypes'
 import { getToken } from './AuthUtils'
 
 /**
@@ -64,10 +64,41 @@ function requestAllProperties(): Promise<DataProperty[]> {
 };
 
 /**
+ * REST APIへリクエストを行い、全データオブジェクトを取得する。
+ * @returns Promise<DataObjectInformation[]>
+ */
+function requestAllObjects(): Promise<DataObjectInformation[]> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = "http://localhost:8080/data-manipulation/dataobjects";
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'GET',
+    headers: headers
+  }
+
+  const fetchProcess = async (): Promise<DataObjectInformation[]> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: Array<DataObjectInformation> = json as Array<DataObjectInformation>
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
  * REST APIへリクエストを行い、全データプロパティを取得する。
  * @returns Promise<DataClassDataPropertyRelation[]>
  */
-function requestPropertyClassRelationsByDataClassId(dataclassid: number): Promise<DataClassDataPropertyRelation[]> {
+function requestClassPropertyRelationsByDataClassId(dataclassid: number): Promise<DataClassDataPropertyRelation[]> {
   // ヘッダー
   let headers = new Headers();
   // Bare認証設定
@@ -183,7 +214,57 @@ function requestAddProperty(dataproperty: DataProperty): Promise<DataProperty> {
 };
 
 /**
- * REST APIへリクエストを行い、クラスを作成する。
+ * REST APIへリクエストを行い、データオブジェクトを作成する。
+ * @returns Promise<DataObjectInformation>
+ */
+function requestAddObject(dataobject: DataObjectInformation): Promise<DataObjectInformation> {
+  // ヘッダー
+  let headers = new Headers();
+  // Bare認証設定
+  headers.append('Authorization', `Bearer ${(getToken())}`)
+  headers.append('Content-Type', 'application/json')
+
+  // API URL
+  const url = "http://localhost:8080/data-manipulation/dataobjects";
+
+  // 必要なリクエストボディ項目
+  type RequestBody = {
+    dataclassId: number;
+    dataproperties: [{
+      id: number
+    }]
+    datavalues: [{
+      dataContent: string
+    }]
+  }
+
+  // 実際のリクエストボディ
+  const actualRequestbody: RequestBody = {
+    dataclassId: dataobject.dataclassId,
+    dataproperties: Object.assign(dataobject.dataproperties.map(item => ({ id: item.id }))),
+    datavalues: Object.assign(dataobject.datavalues.map(item => ({ dataContent: item.dataContent })))
+  }
+
+  // リクエストパラメタ
+  const requestParams = {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(actualRequestbody)
+  }
+
+  const fetchProcess = async (): Promise<DataObjectInformation> => {
+    // リクエスト実行
+    const response = await fetch(url, requestParams)
+    const json = await response.json()
+    const results: DataObjectInformation = json as DataObjectInformation
+    return results;
+  }
+
+  return fetchProcess()
+};
+
+/**
+ * REST APIへリクエストを行い、データクラス・データプロパティ関係を作成する。
  * @returns Promise<DataClassDataPropertyRelation>
  */
 function requestAddClassPropertyRelation(dataclass: DataClassDataPropertyRelation): Promise<DataClassDataPropertyRelation> {
@@ -391,4 +472,4 @@ function requestIssuingToken(user: SignUpUser): Promise<string> {
   return fetchProcess()
 }
 
-export { requestAllClasses, requestAllProperties, requestPropertyClassRelationsByDataClassId, requestAddClass, requestAddProperty, requestAddClassPropertyRelation, requestUpdateClass, requestUpdateProperty, requestCreatingUser, requestIssuingToken }
+export { requestAllClasses, requestAllProperties, requestAllObjects, requestClassPropertyRelationsByDataClassId, requestAddClass, requestAddProperty, requestAddObject, requestAddClassPropertyRelation, requestUpdateClass, requestUpdateProperty, requestCreatingUser, requestIssuingToken }
